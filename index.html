@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Development Enablement Framework</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-color: #2563eb;
+        --secondary-color: #1e40af;
+        --accent-color: #3b82f6;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --dark-bg: #1f2937;
+        --light-bg: #f8fafc;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --border-color: #e5e7eb;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--text-primary);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      /* Header and Navigation */
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-color);
+        z-index: 1000;
+        box-shadow: var(--shadow);
+      }
+
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 70px;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .logo::before {
+        content: "🚀";
+        font-size: 1.8rem;
+      }
+
+      .nav-tabs {
+        display: flex;
+        gap: 1rem;
+        list-style: none;
+      }
+
+      .nav-tab {
+        padding: 0.75rem 1.5rem;
+        background: transparent;
+        border: 2px solid transparent;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .nav-tab:hover {
+        background: var(--light-bg);
+        border-color: var(--primary-color);
+      }
+
+      .nav-tab.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+      }
+
+      .language-toggle {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .lang-btn {
+        padding: 0.5rem 1rem;
+        background: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .lang-btn.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+      }
+
+      /* Main Content */
+      .main-content {
+        margin-top: 70px;
+        min-height: calc(100vh - 70px);
+      }
+
+      .section {
+        display: none;
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .section.active {
+        display: block;
+      }
+
+      /* Presentation Section */
+      .presentation-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+      }
+
+      .slide {
+        display: none;
+        padding: 3rem;
+        min-height: 500px;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      }
+
+      .slide.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .slide h1 {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+
+      .slide h2 {
+        font-size: 2rem;
+        color: var(--secondary-color);
+        margin-bottom: 1.5rem;
+        border-bottom: 3px solid var(--accent-color);
+        padding-bottom: 0.5rem;
+      }
+
+      .slide ul {
+        list-style: none;
+        margin-bottom: 2rem;
+      }
+
+      .slide li {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        position: relative;
+        padding-left: 3rem;
+      }
+
+      .slide li::before {
+        content: "✨";
+        position: absolute;
+        left: 1rem;
+        top: 1rem;
+        font-size: 1.2rem;
+      }
+
+      .slide-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 3rem;
+        background: var(--dark-bg);
+        color: white;
+      }
+
+      .nav-btn {
+        padding: 0.75rem 1.5rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+
+      .nav-btn:hover:not(:disabled) {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+      }
+
+      .nav-btn:disabled {
+        background: var(--text-secondary);
+        cursor: not-allowed;
+      }
+
+      .slide-counter {
+        font-weight: 500;
+      }
+
+      /* Workflow Section */
+      .workflow-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--shadow-lg);
+        padding: 2rem;
+      }
+
+      .workflow-phase {
+        margin-bottom: 3rem;
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        overflow: hidden;
+      }
+
+      .phase-header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 1.5rem;
+        font-size: 1.3rem;
+        font-weight: bold;
+      }
+
+      .phase-content {
+        padding: 1.5rem;
+      }
+
+      .workflow-step {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: var(--light-bg);
+        border-radius: 10px;
+        border-left: 4px solid var(--accent-color);
+      }
+
+      .step-title {
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+      }
+
+      .step-action {
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+      }
+
+      .step-ai-integration {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+      }
+
+      .tool-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .tool-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+      }
+
+      .tool-link:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+      }
+
+      /* Interactive Diagram Section */
+      .diagram-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--shadow-lg);
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .diagram-flow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 3rem 0;
+        flex-wrap: wrap;
+        gap: 2rem;
+      }
+
+      .flow-phase {
+        flex: 1;
+        min-width: 200px;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, var(--light-bg), white);
+        border: 2px solid var(--border-color);
+        border-radius: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .flow-phase:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-color);
+      }
+
+      .flow-phase.active {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        border-color: var(--primary-color);
+      }
+
+      .phase-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+
+      .phase-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      .phase-subtitle {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .flow-arrow {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin: 0 1rem;
+      }
+
+      .phase-details {
+        margin-top: 3rem;
+        padding: 2rem;
+        background: var(--light-bg);
+        border-radius: 15px;
+        text-align: left;
+        display: none;
+      }
+
+      .phase-details.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .phase-details h3 {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+      }
+
+      .phase-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+      }
+
+      .phase-card h4 {
+        margin-bottom: 1rem;
+        color: var(--secondary-color);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .nav-container {
+          flex-direction: column;
+          height: auto;
+          padding: 1rem;
+          gap: 1rem;
+        }
+
+        .nav-tabs {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .main-content {
+          margin-top: 120px;
+        }
+
+        .section {
+          padding: 1rem;
+        }
+
+        .slide {
+          padding: 2rem 1rem;
+          min-height: 400px;
+        }
+
+        .slide h1 {
+          font-size: 2rem;
+        }
+
+        .slide h2 {
+          font-size: 1.5rem;
+        }
+
+        .slide-navigation {
+          padding: 1rem;
+        }
+
+        .diagram-flow {
+          flex-direction: column;
+        }
+
+        .flow-arrow {
+          transform: rotate(90deg);
+          margin: 1rem 0;
+        }
+      }
+
+      /* Utility Classes */
+      .text-center {
+        text-align: center;
+      }
+      .text-primary {
+        color: var(--primary-color);
+      }
+      .text-secondary {
+        color: var(--text-secondary);
+      }
+      .mb-2 {
+        margin-bottom: 1rem;
+      }
+      .mb-4 {
+        margin-bottom: 2rem;
+      }
+      .font-bold {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="nav-container">
+        <div class="logo">
+          <span
+            data-en="AI Development Enablement"
+            data-es="Habilitación de Desarrollo con IA"
+            >AI Development Enablement</span
+          >
+        </div>
+        <nav>
+          <ul class="nav-tabs">
+            <li
+              class="nav-tab active"
+              onclick="showSection('presentation')"
+              data-en="Presentation"
+              data-es="Presentación"
+            >
+              Presentation
+            </li>
+            <li
+              class="nav-tab"
+              onclick="showSection('workflow')"
+              data-en="Workflow"
+              data-es="Flujo de Trabajo"
+            >
+              Workflow
+            </li>
+            <li
+              class="nav-tab"
+              onclick="showSection('diagram')"
+              data-en="Interactive Diagram"
+              data-es="Diagrama Interactivo"
+            >
+              Interactive Diagram
+            </li>
+          </ul>
+        </nav>
+        <div class="language-toggle">
+          <button class="lang-btn active" onclick="setLanguage('en')">
+            EN
+          </button>
+          <button class="lang-btn" onclick="setLanguage('es')">ES</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Presentation Section -->
+      <section id="presentation" class="section active">
+        <div class="presentation-container">
+          <!-- Slide 1: Title -->
+          <div class="slide active">
+            <h1
+              data-en="From PO/SM to AI-Powered Development Enablement"
+              data-es="De PO/SM a Habilitación de Desarrollo Potenciada por IA"
+            >
+              From PO/SM to AI-Powered Development Enablement
+            </h1>
+            <div style="text-align: center; margin-top: 3rem">
+              <div style="font-size: 4rem; margin-bottom: 2rem">🚀</div>
+              <p
+                style="font-size: 1.3rem; color: var(--text-secondary)"
+                data-en="Transforming the way we build products with AI assistance"
+                data-es="Transformando la forma en que construimos productos con asistencia de IA"
+              >
+                Transforming the way we build products with AI assistance
+              </p>
+            </div>
+          </div>
+
+          <!-- Slide 2: The Evolved Role -->
+          <div class="slide">
+            <h2 data-en="The Evolved Role" data-es="El Rol Evolucionado">
+              The Evolved Role
+            </h2>
+            <ul>
+              <li>
+                <strong
+                  data-en="Beyond Management:"
+                  data-es="Más Allá de la Gestión:"
+                  >Beyond Management:</strong
+                >
+                <span
+                  data-en="We are not just managing tasks and sprints; we are actively enabling and accelerating development with AI."
+                  data-es="No solo gestionamos tareas y sprints; estamos habilitando y acelerando activamente el desarrollo con IA."
+                  >We are not just managing tasks and sprints; we are actively
+                  enabling and accelerating development with AI.</span
+                >
+              </li>
+              <li>
+                <strong data-en="Our Goal:" data-es="Nuestro Objetivo:"
+                  >Our Goal:</strong
+                >
+                <span
+                  data-en="To integrate AI tools into every phase of the product lifecycle to maximize efficiency and value."
+                  data-es="Integrar herramientas de IA en cada fase del ciclo de vida del producto para maximizar la eficiencia y el valor."
+                  >To integrate AI tools into every phase of the product
+                  lifecycle to maximize efficiency and value.</span
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Slide 3: The AI-Powered Process -->
+          <div class="slide">
+            <h2
+              data-en="The AI-Powered Process"
+              data-es="El Proceso Potenciado por IA"
+            >
+              The AI-Powered Process
+            </h2>
+            <ul>
+              <li>
+                <strong data-en="Requirements:" data-es="Requisitos:"
+                  >Requirements:</strong
+                >
+                <span
+                  data-en="From manual notes to detailed user stories generated by Gemini."
+                  data-es="De notas manuales a historias de usuario detalladas generadas por Gemini."
+                  >From manual notes to detailed user stories generated by
+                  <strong>Gemini</strong>.</span
+                >
+              </li>
+              <li>
+                <strong data-en="Prototyping:" data-es="Prototipado:"
+                  >Prototyping:</strong
+                >
+                <span
+                  data-en="From static wireframes to functional proof-of-concepts with V0."
+                  data-es="De wireframes estáticos a pruebas de concepto funcionales con V0."
+                  >From static wireframes to functional proof-of-concepts with
+                  <strong>V0</strong>.</span
+                >
+              </li>
+              <li>
+                <strong data-en="Development:" data-es="Desarrollo:"
+                  >Development:</strong
+                >
+                <span
+                  data-en="From a blank slate to a head-start with Cursor."
+                  data-es="De una pizarra en blanco a una ventaja inicial con Cursor."
+                  >From a blank slate to a head-start with
+                  <strong>Cursor</strong>.</span
+                >
+              </li>
+              <li>
+                <strong
+                  data-en="Quality Assurance:"
+                  data-es="Aseguramiento de Calidad:"
+                  >Quality Assurance:</strong
+                >
+                <span
+                  data-en="From reactive testing to automated, proactive quality checks with Cypress and Copilot."
+                  data-es="De pruebas reactivas a verificaciones de calidad automatizadas y proactivas con Cypress y Copilot."
+                  >From reactive testing to automated, proactive quality checks
+                  with <strong>Cypress</strong> and
+                  <strong>Copilot</strong>.</span
+                >
+              </li>
+              <li>
+                <strong data-en="Documentation:" data-es="Documentación:"
+                  >Documentation:</strong
+                >
+                <span
+                  data-en="From a post-launch chore to an automated, integrated part of the process."
+                  data-es="De una tarea posterior al lanzamiento a una parte automatizada e integrada del proceso."
+                  >From a post-launch chore to an automated, integrated part of
+                  the process.</span
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Slide 4: Phase 1 -->
+          <div class="slide">
+            <h2
+              data-en="Phase 1: Requirements to Prototype"
+              data-es="Fase 1: Requisitos a Prototipo"
+            >
+              Phase 1: Requirements to Prototype
+            </h2>
+            <ul>
+              <li>
+                <strong
+                  data-en="Capture & Define:"
+                  data-es="Capturar y Definir:"
+                  >Capture & Define:</strong
+                >
+                <span
+                  data-en="Use Gemini to transcribe and synthesize meeting notes, generating a complete requirements document and user stories."
+                  data-es="Usar Gemini para transcribir y sintetizar notas de reuniones, generando un documento completo de requisitos e historias de usuario."
+                  >Use <strong>Gemini</strong> to transcribe and synthesize
+                  meeting notes, generating a complete requirements document and
+                  user stories.</span
+                >
+              </li>
+              <li>
+                <strong data-en="Prompting Magic:" data-es="Magia de Prompts:"
+                  >Prompting Magic:</strong
+                >
+                <span
+                  data-en="Craft precise prompts with AI assistance, specifying tech stack (React, Tailwind), architecture (component-based), and design principles (mobile-first)."
+                  data-es="Crear prompts precisos con asistencia de IA, especificando stack tecnológico (React, Tailwind), arquitectura (basada en componentes) y principios de diseño (mobile-first)."
+                  >Craft precise prompts with AI assistance, specifying tech
+                  stack (<strong>React</strong>, <strong>Tailwind</strong>),
+                  architecture (component-based), and design principles
+                  (mobile-first).</span
+                >
+              </li>
+              <li>
+                <strong
+                  data-en="Prototype & Validate:"
+                  data-es="Prototipo y Validación:"
+                  >Prototype & Validate:</strong
+                >
+                <span
+                  data-en="Generate a functional prototype using V0, get immediate feedback, and iterate quickly."
+                  data-es="Generar un prototipo funcional usando V0, obtener retroalimentación inmediata e iterar rápidamente."
+                  >Generate a functional prototype using <strong>V0</strong>,
+                  get immediate feedback, and iterate quickly.</span
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Slide 5: Phase 2 -->
+          <div class="slide">
+            <h2
+              data-en="Phase 2: Development to Deployment"
+              data-es="Fase 2: Desarrollo a Despliegue"
+            >
+              Phase 2: Development to Deployment
+            </h2>
+            <ul>
+              <li>
+                <strong data-en="Local Setup:" data-es="Configuración Local:"
+                  >Local Setup:</strong
+                >
+                <span
+                  data-en="Use Cursor to make the V0 code runnable locally, and add functional mocked data."
+                  data-es="Usar Cursor para hacer que el código de V0 sea ejecutable localmente y agregar datos simulados funcionales."
+                  >Use <strong>Cursor</strong> to make the V0 code runnable
+                  locally, and add functional mocked data.</span
+                >
+              </li>
+              <li>
+                <strong
+                  data-en="Code Versioning:"
+                  data-es="Versionado de Código:"
+                  >Code Versioning:</strong
+                >
+                <span
+                  data-en="Push the project to GitHub."
+                  data-es="Subir el proyecto a GitHub."
+                  >Push the project to <strong>GitHub</strong>.</span
+                >
+              </li>
+              <li>
+                <strong data-en="Live Demo:" data-es="Demo en Vivo:"
+                  >Live Demo:</strong
+                >
+                <span
+                  data-en="Automatically deploy the code from GitHub to a live URL using Netlify."
+                  data-es="Desplegar automáticamente el código desde GitHub a una URL en vivo usando Netlify."
+                  >Automatically deploy the code from GitHub to a live URL using
+                  <strong>Netlify</strong>.</span
+                >
+              </li>
+              <li>
+                <strong data-en="Iterate:" data-es="Iterar:">Iterate:</strong>
+                <span
+                  data-en="Use client feedback to quickly improve the demo, repeating the AI-assisted prototyping loop as needed."
+                  data-es="Usar la retroalimentación del cliente para mejorar rápidamente el demo, repitiendo el bucle de prototipado asistido por IA según sea necesario."
+                  >Use client feedback to quickly improve the demo, repeating
+                  the AI-assisted prototyping loop as needed.</span
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Slide 6: Phase 3 -->
+          <div class="slide">
+            <h2
+              data-en="Phase 3: Finalizing with AI"
+              data-es="Fase 3: Finalización con IA"
+            >
+              Phase 3: Finalizing with AI
+            </h2>
+            <ul>
+              <li>
+                <strong data-en="Documentation:" data-es="Documentación:"
+                  >Documentation:</strong
+                >
+                <span
+                  data-en="Use Cursor to automatically generate setup guides, project architecture documentation, and user manuals."
+                  data-es="Usar Cursor para generar automáticamente guías de configuración, documentación de arquitectura del proyecto y manuales de usuario."
+                  >Use <strong>Cursor</strong> to automatically generate setup
+                  guides, project architecture documentation, and user
+                  manuals.</span
+                >
+              </li>
+              <li>
+                <strong data-en="Backend & DB:" data-es="Backend y BD:"
+                  >Backend & DB:</strong
+                >
+                <span
+                  data-en="Build out the backend and connect to a database like Supabase, requesting AI assistance one feature at a time to ensure quality."
+                  data-es="Construir el backend y conectar a una base de datos como Supabase, solicitando asistencia de IA una característica a la vez para asegurar calidad."
+                  >Build out the backend and connect to a database like
+                  <strong>Supabase</strong>, requesting AI assistance one
+                  feature at a time to ensure quality.</span
+                >
+              </li>
+              <li>
+                <strong
+                  data-en="Test Automation:"
+                  data-es="Automatización de Pruebas:"
+                  >Test Automation:</strong
+                >
+                <span
+                  data-en="Use Cypress with Copilot to generate automated tests for your front-end and backend, ensuring quality and preventing regression."
+                  data-es="Usar Cypress con Copilot para generar pruebas automatizadas para tu front-end y backend, asegurando calidad y previniendo regresiones."
+                  >Use <strong>Cypress</strong> with <strong>Copilot</strong> to
+                  generate automated tests for your front-end and backend,
+                  ensuring quality and preventing regression.</span
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Slide 7: The Future is Now -->
+          <div class="slide">
+            <h2 data-en="The Future is Now" data-es="El Futuro es Ahora">
+              The Future is Now
+            </h2>
+            <ul>
+              <li>
+                <strong data-en="Our Mindset:" data-es="Nuestra Mentalidad:"
+                  >Our Mindset:</strong
+                >
+                <span
+                  data-en="We are the catalysts for development, not just the managers."
+                  data-es="Somos los catalizadores del desarrollo, no solo los gestores."
+                  >We are the catalysts for development, not just the
+                  managers.</span
+                >
+              </li>
+              <li>
+                <strong data-en="Key takeaway:" data-es="Conclusión clave:"
+                  >Key takeaway:</strong
+                >
+                <span
+                  data-en="This process is a framework, a starting point. Embrace the tools and adapt them to your unique challenges. The goal is always the same: to deliver value faster and with higher quality."
+                  data-es="Este proceso es un marco de trabajo, un punto de partida. Abraza las herramientas y adáptalas a tus desafíos únicos. El objetivo es siempre el mismo: entregar valor más rápido y con mayor calidad."
+                  >This process is a framework, a starting point. Embrace the
+                  tools and adapt them to your unique challenges. The goal is
+                  always the same: to deliver value faster and with higher
+                  quality.</span
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Navigation -->
+          <div class="slide-navigation">
+            <button
+              class="nav-btn"
+              id="prevBtn"
+              onclick="changeSlide(-1)"
+              data-en="Previous"
+              data-es="Anterior"
+            >
+              Previous
+            </button>
+            <span class="slide-counter">
+              <span id="currentSlide">1</span> / <span id="totalSlides">7</span>
+            </span>
+            <button
+              class="nav-btn"
+              id="nextBtn"
+              onclick="changeSlide(1)"
+              data-en="Next"
+              data-es="Siguiente"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Workflow Section -->
+      <section id="workflow" class="section">
+        <div class="workflow-container">
+          <h1
+            class="text-center mb-4"
+            data-en="AI Development Enablement Workflow"
+            data-es="Flujo de Trabajo de Habilitación de Desarrollo con IA"
+          >
+            AI Development Enablement Workflow
+          </h1>
+          <p
+            class="text-center text-secondary mb-4"
+            data-en="This workflow outlines a proven, AI-augmented process for accelerating the product development lifecycle from ideation to delivery. This is a personal process that can be adapted to fit any team's needs."
+            data-es="Este flujo de trabajo describe un proceso probado y aumentado por IA para acelerar el ciclo de vida del desarrollo de productos desde la ideación hasta la entrega. Este es un proceso personal que puede adaptarse a las necesidades de cualquier equipo."
+          >
+            This workflow outlines a proven, AI-augmented process for
+            accelerating the product development lifecycle from ideation to
+            delivery. This is a personal process that can be adapted to fit any
+            team's needs.
+          </p>
+
+          <!-- Phase 1 -->
+          <div class="workflow-phase">
+            <div
+              class="phase-header"
+              data-en="Phase 1: AI-Powered Requirement Gathering and Definition"
+              data-es="Fase 1: Recopilación y Definición de Requisitos Potenciada por IA"
+            >
+              Phase 1: AI-Powered Requirement Gathering and Definition
+            </div>
+            <div class="phase-content">
+              <div class="workflow-step">
+                <div
+                  class="step-title"
+                  data-en="Step 1.1: Ideation & Scoping Session"
+                  data-es="Paso 1.1: Sesión de Ideación y Definición de Alcance"
+                >
+                  Step 1.1: Ideation & Scoping Session
+                </div>
+                <div class="step-action">
+                  <strong data-en="Action:" data-es="Acción:">Action:</strong>
+                  <span
+                    data-en="Conduct a meeting with stakeholders to discuss the project vision. Record or take detailed notes."
+                    data-es="Realizar una reunión con las partes interesadas para discutir la visión del proyecto. Grabar o tomar notas detalladas."
+                    >Conduct a meeting with stakeholders to discuss the project
+                    vision. Record or take detailed notes.</span
+                  >
+                </div>
+                <div class="step-ai-integration">
+                  <strong data-en="AI Integration:" data-es="Integración de IA:"
+                    >AI Integration:</strong
+                  >
+                  <span
+                    data-en="Use a tool like Gemini to transcribe the meeting and generate a high-level summary. Pose questions to the AI to refine the project's scope."
+                    data-es="Usar una herramienta como Gemini para transcribir la reunión y generar un resumen de alto nivel. Hacer preguntas a la IA para refinar el alcance del proyecto."
+                    >Use a tool like <strong>Gemini</strong> to transcribe the
+                    meeting and generate a high-level summary. Pose questions to
+                    the AI to refine the project's scope.</span
+                  >
+                  <div class="tool-links">
+                    <a
+                      href="https://gemini.google.com/"
+                      class="tool-link"
+                      target="_blank"
+                      >🤖 Gemini</a
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="workflow-step">
+                <div
+                  class="step-title"
+                  data-en="Step 1.2: Requirements Document Generation"
+                  data-es="Paso 1.2: Generación de Documento de Requisitos"
+                >
+                  Step 1.2: Requirements Document Generation
+                </div>
+                <div class="step-action">
+                  <strong data-en="Action:" data-es="Acción:">Action:</strong>
+                  <span
+                    data-en="Use the AI to generate a comprehensive requirements document."
+                    data-es="Usar la IA para generar un documento completo de requisitos."
+                    >Use the AI to generate a comprehensive requirements
+                    document.</span
+                  >
+                </div>
+                <div class="step-ai-integration">
+                  <strong data-en="AI Integration:" data-es="Integración de IA:"
+                    >AI Integration:</strong
+                  >
+                  <span
+                    data-en="With the context from the previous step, prompt the AI to create a document with an introduction, scope, high-level flow, and detailed user stories."
+                    data-es="Con el contexto del paso anterior, solicitar a la IA que cree un documento con una introducción, alcance, flujo de alto nivel e historias de usuario detalladas."
+                    >With the context from the previous step, prompt the AI to
+                    create a document with an introduction, scope, high-level
+                    flow, and detailed user stories.</span
+                  >
+                  <div class="tool-links">
+                    <a
+                      href="https://gemini.google.com/"
+                      class="tool-link"
+                      target="_blank"
+                      >🤖 Gemini</a
+                    >
+                    <a
+                      href="https://www.atlassian.com/software/jira"
+                      class="tool-link"
+                      target="_blank"
+                      >📋 Jira</a
+                    >
+                    <a
+                      href="https://trello.com/"
+                      class="tool-link"
+                      target="_blank"
+                      >📝 Trello</a
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="workflow-step">
+                <div
+                  class="step-title"
+                  data-en="Step 1.3: Iterative Refinement"
+                  data-es="Paso 1.3: Refinamiento Iterativo"
+                >
+                  Step 1.3: Iterative Refinement
+                </div>
+                <div class="step-action">
+                  <strong data-en="Action:" data-es="Acción:">Action:</strong>
+                  <span
+                    data-en="Review the generated document and provide feedback to the AI."
+                    data-es="Revisar el documento generado y proporcionar retroalimentación a la IA."
+                    >Review the generated document and provide feedback to the
+                    AI.</span
+                  >
+                </div>
+                <div class="step-ai-integration">
+                  <strong data-en="AI Integration:" data-es="Integración de IA:"
+                    >AI Integration:</strong
+                  >
+                  <span
+                    data-en="Continuously iterate by asking the AI to make changes, such as 'Please rephrase the user stories for better clarity' or 'Can you add a section on success metrics?'"
+                    data-es="Iterar continuamente pidiendo a la IA que haga cambios, como 'Por favor reformula las historias de usuario para mayor claridad' o '¿Puedes agregar una sección sobre métricas de éxito?'"
+                    >Continuously iterate by asking the AI to make changes, such
+                    as "Please rephrase the user stories for better clarity" or
+                    "Can you add a section on success metrics?"</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 2 -->
+          <div class="workflow-phase">
+            <div
+              class="phase-header"
+              data-en="Phase 2: Rapid Prototyping & Front-End Development"
+              data-es="Fase 2: Prototipado Rápido y Desarrollo Front-End"
+            >
+              Phase 2: Rapid Prototyping & Front-End Development
+            </div>
+            <div class="phase-content">
+              <div class="workflow-step">
+                <div
+                  class="step-title"
+                  data-en="Step 2.1: Prompt Engineering for Prototyping"
+                  data-es="Paso 2.1: Ingeniería de Prompts para Prototipado"
+                >
+                  Step 2.1: Prompt Engineering for Prototyping
+                </div>
+                <div class="step-action">
+                  <strong data-en="Action:" data-es="Acción:">Action:</strong>
+                  <span
+                    data-en="Develop a precise prompt for a rapid prototyping tool."
+                    data-es="Desarrollar un prompt preciso para una herramienta de prototipado rápido."
+                    >Develop a precise prompt for a rapid prototyping
+                    tool.</span
+                  >
+                </div>
+                <div class="step-ai-integration">
+                  <strong data-en="AI Integration:" data-es="Integración de IA:"
+                    >AI Integration:</strong
+                  >
+                  <span
+                    data-en="Use Gemini to generate a V0-specific prompt focusing on React, component-based architecture, mobile-first design, Tailwind CSS, and professional styling."
+                    data-es="Usar Gemini para generar un prompt específico para V0 enfocado en React, arquitectura basada en componentes, diseño mobile-first, Tailwind CSS y estilo profesional."
+                    >Use <strong>Gemini</strong> to generate a V0-specific
+                    prompt focusing on React, component-based architecture,
+                    mobile-first design, Tailwind CSS, and professional
+                    styling.</span
+                  >
+                  <div class="tool-links">
+                    <a
+                      href="https://gemini.google.com/"
+                      class="tool-link"
+                      target="_blank"
+                      >🤖 Gemini</a
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="workflow-step">
+                <div
+                  class="step-title"
+                  data-en="Step 2.2: Prototype Generation & Iteration"
+                  data-es="Paso 2.2: Generación e Iteración de Prototipos"
+                >
+                  Step 2.2: Prototype Generation & Iteration
+                </div>
+                <div class="step-action">
+                  <strong data-en="Action:" data-es="Acción:">Action:</strong>
+                  <span
+                    data-en="Pass the refined prompt to V0 to generate the front-end code."
+                    data-es="Pasar el prompt refinado a V0 para generar el código front-end."
+                    >Pass the refined prompt to V0 to generate the front-end
+                    code.</span
+                  >
+                </div>
+                <div class="step-ai-integration">
+                  <strong data-en="AI Integration:" data-es="Integración de IA:"
+                    >AI Integration:</strong
+                  >
+                  <span
+                    data-en="Download the code and, if needed, provide feedback to V0 for design or structural changes until you are satisfied with the result."
+                    data-es="Descargar el código y, si es necesario, proporcionar retroalimentación a V0 para cambios de diseño o estructura hasta estar satisfecho con el resultado."
+                    >Download the code and, if needed, provide feedback to V0
+                    for design or structural changes until you are satisfied
+                    with the result.</span
+                  >
+                  <div class="tool-links">
+                    <a href="https://v0.dev/" class="tool-link" target="_blank"
+                      >⚡ V0</a
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="workflow-step">
+                <div
+                  class="step-title"
+                  data-en="Step 2.3: Local Development & Functional Mocking"
+                  data-es="Paso 2.3: Desarrollo Local y Simulación Funcional"
+                >
+                  Step 2.3: Local Development & Functional Mocking
+                </div>
+                <div class="step-action">
+                  <strong data-en="Action:" data-es="Acción:">Action:</strong>
+                  <span
+                    data-en="Open the downloaded code in a local editor and make it runnable."
+                    data-es="Abrir el código descargado en un editor local y hacerlo ejecutable."
+                    >Open the downloaded code in a local editor and make it
+                    runnable.</span
+                  >
+                </div>
+                <div class="step-ai-integration">
+                  <strong data-en="AI Integration:" data-es="Integración de IA:"
+                    >AI Integration:</strong
+                  >
+                  <span
+                    data-en="Use Cursor to analyze the project, make the codebase runnable locally, make the front-end UI navigable and functional, and mock data to simulate a live application."
+                    data-es="Usar Cursor para analizar el proyecto, hacer que la base de código sea ejecutable localmente, hacer que la UI front-end sea navegable y funcional, y simular datos para simular una aplicación en vivo."
+                    >Use <strong>Cursor</strong> to analyze the project, make
+                    the codebase runnable locally, make the front-end UI
+                    navigable and functional, and mock data to simulate a live
+                    application.</span
+                  >
+                  <div class="tool-links">
+                    <a
+                      href="https://cursor.sh/"
+                      class="tool-link"
+                      target="_blank"
+                      >🖱️ Cursor</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 3 -->
+          <div class="workflow-phase">
+            <div
+              class="phase-header"
+              data-en="Phase 3: Deployment & User Validation"
+              data-es="Fase 3: Despliegue y Validación de Usuario"
+            >
+              Phase 3: Deployment & User Validation
+            </div>
+            <div class="phase-content">
+              <div class="workflow-step">
+                <div
+                  class="step-title"
+                  data-en="Step 3.1: Code Versioning"
+                  data-es="Paso 3.1: Versionado de Código"
+                >
+                  Step 3.1: Code Versioning
+                </div>
+                <div class="step-action">
+                  <strong data-en="Action:" data-es="Acción:">Action:</strong>
+                  <span
+                    data-en="Upload the functional front-end code to a version control system."
+                    data-es="Subir el código front-end funcional a un sistema de control de versiones."
+                    >Upload the functional front-end code to a version control
+                    system.</span
+                  >
+                </div>
+                <div class="step-ai-integration">
+                  <strong data-en="AI Integration:" data-es="Integración de IA:"
+                    >AI Integration:</strong
+                  >
+                  <span
+                    data-en="Ensure the code is properly structured and well-commented before committing."
+                    data-es="Asegurar que el código esté bien estructurado y comentado antes de hacer commit."
+                    >Ensure the code is properly structured and well-commented
+                    before committing.</span
+                  >
+                  <div class="tool-links">
+                    <a
+                      href="https://github.com/"
+                      class="tool-link"
+                      target="_blank"
+                      >🐙 GitHub</a
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="workflow-step">
+                <div
+                  class="step-title"
+                  data-en="Step 3.2: Continuous Deployment"
+                  data-es="Paso 3.2: Despliegue Continuo"
+                >
+                  Step 3.2: Continuous Deployment
+                </div>
+                <div class="step-action">
+                  <strong data-en="Action:" data-es="Acción:">Action:</strong>
+                  <span
+                    data-en="Connect the GitHub repository to a deployment service."
+                    data-es="Conectar el repositorio de GitHub a un servicio de despliegue."
+                    >Connect the GitHub repository to a deployment
+                    service.</span
+                  >
+                </div>
+                <div class="step-ai-integration">
+                  <strong data-en="AI Integration:" data-es="Integración de IA:"
+                    >AI Integration:</strong
+                  >
+                  <span
+                    data-en="Netlify automatically deploys the site, providing a live URL for a client demo."
+                    data-es="Netlify despliega automáticamente el sitio, proporcionando una URL en vivo para una demo del cliente."
+                    >Netlify automatically deploys the site, providing a live
+                    URL for a client demo.</span
+                  >
+                  <div class="tool-links">
+                    <a
+                      href="https://www.netlify.com/"
+                      class="tool-link"
+                      target="_blank"
+                      >🚀 Netlify</a
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="workflow-step">
+                <div
+                  class="step-title"
+                  data-en="Step 3.3: Demo & Feedback Loop"
+                  data-es="Paso 3.3: Demo y Bucle de Retroalimentación"
+                >
+                  Step 3.3: Demo & Feedback Loop
+                </div>
+                <div class="step-action">
+                  <strong data-en="Action:" data-es="Acción:">Action:</strong>
+                  <span
+                    data-en="Present the live demo to the client."
+                    data-es="Presentar la demo en vivo al cliente."
+                    >Present the live demo to the client.</span
+                  >
+                </div>
+                <div class="step-ai-integration">
+                  <strong data-en="AI Integration:" data-es="Integración de IA:"
+                    >AI Integration:</strong
+                  >
+                  <span
+                    data-en="Capture client feedback and use it as a basis for the next AI-assisted iteration, repeating the prototyping and local development steps until the client is satisfied."
+                    data-es="Capturar la retroalimentación del cliente y usarla como base para la siguiente iteración asistida por IA, repitiendo los pasos de prototipado y desarrollo local hasta que el cliente esté satisfecho."
+                    >Capture client feedback and use it as a basis for the next
+                    AI-assisted iteration, repeating the prototyping and local
+                    development steps until the client is satisfied.</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 4 -->
+          <div class="workflow-phase">
+            <div
+              class="phase-header"
+              data-en="Phase 4: Backend & Test Automation"
+              data-es="Fase 4: Backend y Automatización de Pruebas"
+            >
+              Phase 4: Backend & Test Automation
+            </div>
+            <div class="phase-content">
+              <div class="workflow-step">
+                <div
+                  class="step-title"
+                  data-en="Step 4.1: Documentation Generation"
+                  data-es="Paso 4.1: Generación de Documentación"
+                >
+                  Step 4.1: Documentation Generation
+                </div>
+                <div class="step-action">
+                  <strong data-en="Action:" data-es="Acción:">Action:</strong>
+                  <span
+                    data-en="Generate documentation for the project."
+                    data-es="Generar documentación para el proyecto."
+                    >Generate documentation for the project.</span
+                  >
+                </div>
+                <div class="step-ai-integration">
+                  <strong data-en="AI Integration:" data-es="Integración de IA:"
+                    >AI Integration:</strong
+                  >
+                  <span
+                    data-en="Use Cursor to analyze the entire project and generate markdown documentation files including setup instructions, project architecture, and user-facing site map or guide."
+                    data-es="Usar Cursor para analizar todo el proyecto y generar archivos de documentación markdown incluyendo instrucciones de configuración, arquitectura del proyecto y mapa del sitio o guía orientada al usuario."
+                    >Use <strong>Cursor</strong> to analyze the entire project
+                    and generate markdown documentation files including setup
+                    instructions, project architecture, and user-facing site map
+                    or guide.</span
+                  >
+                  <div class="tool-links">
+                    <a
+                      href="https://cursor.sh/"
+                      class="tool-link"
+                      target="_blank"
+                      >🖱️ Cursor</a
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="workflow-step">
+                <div
+                  class="step-title"
+                  data-en="Step 4.2: Backend Development"
+                  data-es="Paso 4.2: Desarrollo Backend"
+                >
+                  Step 4.2: Backend Development
+                </div>
+                <div class="step-action">
+                  <strong data-en="Action:" data-es="Acción:">Action:</strong>
+                  <span
+                    data-en="Build the backend logic and database."
+                    data-es="Construir la lógica del backend y la base de datos."
+                    >Build the backend logic and database.</span
+                  >
+                </div>
+                <div class="step-ai-integration">
+                  <strong data-en="AI Integration:" data-es="Integración de IA:"
+                    >AI Integration:</strong
+                  >
+                  <span
+                    data-en="Use Cursor to assist with backend development, connecting to services like Supabase. Request one feature or endpoint at a time to avoid errors. Define and enforce AI rules or best practices to ensure clean, consistent code."
+                    data-es="Usar Cursor para ayudar con el desarrollo backend, conectando a servicios como Supabase. Solicitar una característica o endpoint a la vez para evitar errores. Definir y aplicar reglas de IA o mejores prácticas para asegurar código limpio y consistente."
+                    >Use <strong>Cursor</strong> to assist with backend
+                    development, connecting to services like
+                    <strong>Supabase</strong>. Request one feature or endpoint
+                    at a time to avoid errors. Define and enforce "AI rules" or
+                    best practices to ensure clean, consistent code.</span
+                  >
+                  <div class="tool-links">
+                    <a
+                      href="https://supabase.com/"
+                      class="tool-link"
+                      target="_blank"
+                      >🗄️ Supabase</a
+                    >
+                    <a
+                      href="https://kotlinlang.org/docs/home.html"
+                      class="tool-link"
+                      target="_blank"
+                      >📚 Best Practices</a
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="workflow-step">
+                <div
+                  class="step-title"
+                  data-en="Step 4.3: Automated Testing"
+                  data-es="Paso 4.3: Pruebas Automatizadas"
+                >
+                  Step 4.3: Automated Testing
+                </div>
+                <div class="step-action">
+                  <strong data-en="Action:" data-es="Acción:">Action:</strong>
+                  <span
+                    data-en="Generate and integrate automated tests."
+                    data-es="Generar e integrar pruebas automatizadas."
+                    >Generate and integrate automated tests.</span
+                  >
+                </div>
+                <div class="step-ai-integration">
+                  <strong data-en="AI Integration:" data-es="Integración de IA:"
+                    >AI Integration:</strong
+                  >
+                  <span
+                    data-en="With Cursor or Copilot, ask the AI to generate Cypress tests including installation, project structure, selector assignment, test report generation, test coverage review, evidence generation, and CI/CD integration for automated regression."
+                    data-es="Con Cursor o Copilot, pedir a la IA que genere pruebas de Cypress incluyendo instalación, estructura del proyecto, asignación de selectores, generación de reportes de prueba, revisión de cobertura de pruebas, generación de evidencia e integración CI/CD para regresión automatizada."
+                    >With <strong>Cursor</strong> or <strong>Copilot</strong>,
+                    ask the AI to generate Cypress tests including installation,
+                    project structure, selector assignment, test report
+                    generation, test coverage review, evidence generation, and
+                    CI/CD integration for automated regression.</span
+                  >
+                  <div class="tool-links">
+                    <a
+                      href="https://www.cypress.io/"
+                      class="tool-link"
+                      target="_blank"
+                      >🧪 Cypress</a
+                    >
+                    <a
+                      href="https://github.com/features/copilot"
+                      class="tool-link"
+                      target="_blank"
+                      >👨‍💻 Copilot</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Diagram Section -->
+      <section id="diagram" class="section">
+        <div class="diagram-container">
+          <h1
+            class="text-center mb-4"
+            data-en="AI Development Enablement Process Flow"
+            data-es="Flujo del Proceso de Habilitación de Desarrollo con IA"
+          >
+            AI Development Enablement Process Flow
+          </h1>
+          <p
+            class="text-center text-secondary mb-4"
+            data-en="Click on any phase to see detailed information about that step in the process."
+            data-es="Haz clic en cualquier fase para ver información detallada sobre ese paso en el proceso."
+          >
+            Click on any phase to see detailed information about that step in
+            the process.
+          </p>
+
+          <div class="diagram-flow">
+            <div class="flow-phase" onclick="showPhaseDetails(1)">
+              <div class="phase-icon">📋</div>
+              <div
+                class="phase-title"
+                data-en="Requirements"
+                data-es="Requisitos"
+              >
+                Requirements
+              </div>
+              <div
+                class="phase-subtitle"
+                data-en="Gathering & Definition"
+                data-es="Recopilación y Definición"
+              >
+                Gathering & Definition
+              </div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-phase" onclick="showPhaseDetails(2)">
+              <div class="phase-icon">⚡</div>
+              <div
+                class="phase-title"
+                data-en="Prototyping"
+                data-es="Prototipado"
+              >
+                Prototyping
+              </div>
+              <div
+                class="phase-subtitle"
+                data-en="Rapid Development"
+                data-es="Desarrollo Rápido"
+              >
+                Rapid Development
+              </div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-phase" onclick="showPhaseDetails(3)">
+              <div class="phase-icon">🚀</div>
+              <div
+                class="phase-title"
+                data-en="Deployment"
+                data-es="Despliegue"
+              >
+                Deployment
+              </div>
+              <div
+                class="phase-subtitle"
+                data-en="User Validation"
+                data-es="Validación de Usuario"
+              >
+                User Validation
+              </div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-phase" onclick="showPhaseDetails(4)">
+              <div class="phase-icon">🧪</div>
+              <div
+                class="phase-title"
+                data-en="Finalization"
+                data-es="Finalización"
+              >
+                Finalization
+              </div>
+              <div
+                class="phase-subtitle"
+                data-en="Backend & Testing"
+                data-es="Backend y Pruebas"
+              >
+                Backend & Testing
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase Details -->
+          <div id="phase-details-1" class="phase-details">
+            <h3
+              data-en="Phase 1: AI-Powered Requirement Gathering and Definition"
+              data-es="Fase 1: Recopilación y Definición de Requisitos Potenciada por IA"
+            >
+              Phase 1: AI-Powered Requirement Gathering and Definition
+            </h3>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                margin-top: 2rem;
+              "
+            >
+              <div class="phase-card">
+                <h4
+                  data-en="🎯 Ideation & Scoping Session"
+                  data-es="🎯 Sesión de Ideación y Definición de Alcance"
+                >
+                  🎯 Ideation & Scoping Session
+                </h4>
+                <p
+                  data-en="Conduct stakeholder meetings and use Gemini to transcribe and generate high-level summaries."
+                  data-es="Realizar reuniones con partes interesadas y usar Gemini para transcribir y generar resúmenes de alto nivel."
+                >
+                  Conduct stakeholder meetings and use
+                  <strong>Gemini</strong> to transcribe and generate high-level
+                  summaries.
+                </p>
+              </div>
+              <div class="phase-card">
+                <h4
+                  data-en="📄 Requirements Document Generation"
+                  data-es="📄 Generación de Documento de Requisitos"
+                >
+                  📄 Requirements Document Generation
+                </h4>
+                <p
+                  data-en="Generate comprehensive requirements with introduction, scope, high-level flow, and detailed user stories."
+                  data-es="Generar requisitos completos con introducción, alcance, flujo de alto nivel e historias de usuario detalladas."
+                >
+                  Generate comprehensive requirements with introduction, scope,
+                  high-level flow, and detailed user stories.
+                </p>
+              </div>
+              <div class="phase-card">
+                <h4
+                  data-en="🔄 Iterative Refinement"
+                  data-es="🔄 Refinamiento Iterativo"
+                >
+                  🔄 Iterative Refinement
+                </h4>
+                <p
+                  data-en="Review and continuously iterate on the generated document with AI assistance."
+                  data-es="Revisar e iterar continuamente en el documento generado con asistencia de IA."
+                >
+                  Review and continuously iterate on the generated document with
+                  AI assistance.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div id="phase-details-2" class="phase-details">
+            <h3
+              data-en="Phase 2: Rapid Prototyping & Front-End Development"
+              data-es="Fase 2: Prototipado Rápido y Desarrollo Front-End"
+            >
+              Phase 2: Rapid Prototyping & Front-End Development
+            </h3>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                margin-top: 2rem;
+              "
+            >
+              <div class="phase-card">
+                <h4
+                  data-en="🎨 Prompt Engineering"
+                  data-es="🎨 Ingeniería de Prompts"
+                >
+                  🎨 Prompt Engineering
+                </h4>
+                <p
+                  data-en="Develop precise prompts for V0 focusing on React, component-based architecture, and mobile-first design."
+                  data-es="Desarrollar prompts precisos para V0 enfocados en React, arquitectura basada en componentes y diseño mobile-first."
+                >
+                  Develop precise prompts for V0 focusing on React,
+                  component-based architecture, and mobile-first design.
+                </p>
+              </div>
+              <div class="phase-card">
+                <h4
+                  data-en="⚡ Prototype Generation"
+                  data-es="⚡ Generación de Prototipos"
+                >
+                  ⚡ Prototype Generation
+                </h4>
+                <p
+                  data-en="Use V0 to generate functional front-end code and iterate until satisfied with the result."
+                  data-es="Usar V0 para generar código front-end funcional e iterar hasta estar satisfecho con el resultado."
+                >
+                  Use V0 to generate functional front-end code and iterate until
+                  satisfied with the result.
+                </p>
+              </div>
+              <div class="phase-card">
+                <h4
+                  data-en="🖥️ Local Development"
+                  data-es="🖥️ Desarrollo Local"
+                >
+                  🖥️ Local Development
+                </h4>
+                <p
+                  data-en="Use Cursor to make the code runnable locally, add navigation functionality, and mock data."
+                  data-es="Usar Cursor para hacer que el código sea ejecutable localmente, agregar funcionalidad de navegación y simular datos."
+                >
+                  Use Cursor to make the code runnable locally, add navigation
+                  functionality, and mock data.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div id="phase-details-3" class="phase-details">
+            <h3
+              data-en="Phase 3: Deployment & User Validation"
+              data-es="Fase 3: Despliegue y Validación de Usuario"
+            >
+              Phase 3: Deployment & User Validation
+            </h3>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                margin-top: 2rem;
+              "
+            >
+              <div class="phase-card">
+                <h4
+                  data-en="🐙 Code Versioning"
+                  data-es="🐙 Versionado de Código"
+                >
+                  🐙 Code Versioning
+                </h4>
+                <p
+                  data-en="Upload functional front-end code to GitHub with proper structure and comments."
+                  data-es="Subir código front-end funcional a GitHub con estructura y comentarios adecuados."
+                >
+                  Upload functional front-end code to GitHub with proper
+                  structure and comments.
+                </p>
+              </div>
+              <div class="phase-card">
+                <h4
+                  data-en="🚀 Continuous Deployment"
+                  data-es="🚀 Despliegue Continuo"
+                >
+                  🚀 Continuous Deployment
+                </h4>
+                <p
+                  data-en="Connect GitHub to Netlify for automatic deployment and live URL generation."
+                  data-es="Conectar GitHub a Netlify para despliegue automático y generación de URL en vivo."
+                >
+                  Connect GitHub to Netlify for automatic deployment and live
+                  URL generation.
+                </p>
+              </div>
+              <div class="phase-card">
+                <h4
+                  data-en="🔄 Demo & Feedback Loop"
+                  data-es="🔄 Demo y Bucle de Retroalimentación"
+                >
+                  🔄 Demo & Feedback Loop
+                </h4>
+                <p
+                  data-en="Present live demos to clients and iterate based on feedback until satisfaction."
+                  data-es="Presentar demos en vivo a clientes e iterar basado en retroalimentación hasta la satisfacción."
+                >
+                  Present live demos to clients and iterate based on feedback
+                  until satisfaction.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div id="phase-details-4" class="phase-details">
+            <h3
+              data-en="Phase 4: Backend & Test Automation"
+              data-es="Fase 4: Backend y Automatización de Pruebas"
+            >
+              Phase 4: Backend & Test Automation
+            </h3>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                margin-top: 2rem;
+              "
+            >
+              <div class="phase-card">
+                <h4
+                  data-en="📚 Documentation Generation"
+                  data-es="📚 Generación de Documentación"
+                >
+                  📚 Documentation Generation
+                </h4>
+                <p
+                  data-en="Use Cursor to generate setup guides, project architecture documentation, and user manuals."
+                  data-es="Usar Cursor para generar guías de configuración, documentación de arquitectura del proyecto y manuales de usuario."
+                >
+                  Use Cursor to generate setup guides, project architecture
+                  documentation, and user manuals.
+                </p>
+              </div>
+              <div class="phase-card">
+                <h4
+                  data-en="🗄️ Backend Development"
+                  data-es="🗄️ Desarrollo Backend"
+                >
+                  🗄️ Backend Development
+                </h4>
+                <p
+                  data-en="Build backend with Supabase integration, requesting AI assistance one feature at a time."
+                  data-es="Construir backend con integración de Supabase, solicitando asistencia de IA una característica a la vez."
+                >
+                  Build backend with Supabase integration, requesting AI
+                  assistance one feature at a time.
+                </p>
+              </div>
+              <div class="phase-card">
+                <h4
+                  data-en="🧪 Automated Testing"
+                  data-es="🧪 Pruebas Automatizadas"
+                >
+                  🧪 Automated Testing
+                </h4>
+                <p
+                  data-en="Generate Cypress tests with Copilot including installation, structure, reports, and CI/CD integration."
+                  data-es="Generar pruebas de Cypress con Copilot incluyendo instalación, estructura, reportes e integración CI/CD."
+                >
+                  Generate Cypress tests with Copilot including installation,
+                  structure, reports, and CI/CD integration.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // Global variables
+      let currentSlide = 1;
+      const totalSlides = 7;
+      let currentLanguage = "en";
+
+      // Initialize the application
+      document.addEventListener("DOMContentLoaded", function () {
+        updateSlideNavigation();
+        updateLanguage();
+      });
+
+      // Section navigation
+      function showSection(sectionId) {
+        // Hide all sections
+        const sections = document.querySelectorAll(".section");
+        sections.forEach((section) => section.classList.remove("active"));
+
+        // Show selected section
+        document.getElementById(sectionId).classList.add("active");
+
+        // Update navigation tabs
+        const tabs = document.querySelectorAll(".nav-tab");
+        tabs.forEach((tab) => tab.classList.remove("active"));
+        event.target.classList.add("active");
+      }
+
+      // Slide navigation
+      function changeSlide(direction) {
+        const slides = document.querySelectorAll(".slide");
+        slides[currentSlide - 1].classList.remove("active");
+
+        currentSlide += direction;
+
+        if (currentSlide < 1) currentSlide = 1;
+        if (currentSlide > totalSlides) currentSlide = totalSlides;
+
+        slides[currentSlide - 1].classList.add("active");
+        updateSlideNavigation();
+      }
+
+      function updateSlideNavigation() {
+        document.getElementById("currentSlide").textContent = currentSlide;
+        document.getElementById("totalSlides").textContent = totalSlides;
+
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        prevBtn.disabled = currentSlide === 1;
+        nextBtn.disabled = currentSlide === totalSlides;
+      }
+
+      // Interactive diagram
+      function showPhaseDetails(phaseNumber) {
+        // Remove active class from all phases
+        const phases = document.querySelectorAll(".flow-phase");
+        phases.forEach((phase) => phase.classList.remove("active"));
+
+        // Hide all phase details
+        const details = document.querySelectorAll(".phase-details");
+        details.forEach((detail) => detail.classList.remove("active"));
+
+        // Activate clicked phase
+        event.currentTarget.classList.add("active");
+
+        // Show corresponding details
+        document
+          .getElementById(`phase-details-${phaseNumber}`)
+          .classList.add("active");
+      }
+
+      // Language switching
+      function setLanguage(lang) {
+        currentLanguage = lang;
+        updateLanguage();
+
+        // Update language buttons
+        const langBtns = document.querySelectorAll(".lang-btn");
+        langBtns.forEach((btn) => btn.classList.remove("active"));
+        event.target.classList.add("active");
+      }
+
+      function updateLanguage() {
+        const elements = document.querySelectorAll(`[data-${currentLanguage}]`);
+        elements.forEach((element) => {
+          const text = element.getAttribute(`data-${currentLanguage}`);
+          if (text) {
+            element.textContent = text;
+          }
+        });
+      }
+
+      // Keyboard navigation for slides
+      document.addEventListener("keydown", function (e) {
+        if (
+          document.getElementById("presentation").classList.contains("active")
+        ) {
+          if (e.key === "ArrowLeft") changeSlide(-1);
+          if (e.key === "ArrowRight") changeSlide(1);
+        }
+      });
+
+      // Smooth scrolling for internal links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
